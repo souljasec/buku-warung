@@ -63,7 +63,9 @@ or **mitigated** (reduced, not removed).
 | M12 | Price changes rewriting old bestseller values | fixed | Price is fixed when the item is first tallied that day. |
 | M13 | Spending recorded after the evening count (same day) | accepted | Counted in that day's spending but not added back to the next cash period; record before counting or count next day. Documented in PANDUAN. |
 | M14 | Imported history days have both a total and later counts | fixed | A day's typed or imported total replaces count-derived sales for that day. *logic* |
-| M15 | **Typing the day's sales total and also doing the money count** counts sales twice | **fixed** | The typed total wins for that day; the count still sets the starting cash for the next day; clearing the total returns to the count. *logic + e2e* |
+| M15 | **Recording sales and also doing the money count** counts sales twice | **fixed** | Recorded sales (and imported daily totals) win for that day; the count still sets the starting cash for the next day. *logic + e2e* |
+| M17 | **No practical way to record sales** when the drawer never starts the day at a known amount | **fixed** | Sales are entries like expenses: + → Masuk, several per day, cash / QRIS / GoFood, deletable; `jual 1500` in WhatsApp paste. Cash sales are never mistaken for spending in the count math. *logic + e2e* |
+| M18 | **The + keypad reopening on Masuk after a sale**, so the next market expense is saved as a sale | **fixed** | + always opens on Keluar; Masuk only from a money-in button or one tap. *e2e: expense after a sale lands in money out* |
 | M16 | **A long note widens the day card and pushes the + Tambah button and category pickers off screen** | **fixed** | Cards can no longer grow wider than the screen; long notes end in "…". *e2e: nothing off screen with a long note* |
 
 ## Out of scope

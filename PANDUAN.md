@@ -19,14 +19,21 @@ Cukup **±2 menit setiap malam**.
 
 ---
 
-## 2. Siang hari: catat uang keluar
+## 2. Catat uang keluar dan uang masuk
 
-Paling cepat: ketuk tombol oranye **+**, ketik angka (76 = Rp 76.000), pilih kategori, **Simpan**.
+Semua lewat tombol oranye **+**. Di atas ada dua pilihan: **Keluar** dan **Masuk**.
 
-Atau kirim satu pesan WhatsApp ke diri sendiri setiap bayar sesuatu, lalu tempel malam hari. Angka dalam **ribuan**.
+**Uang keluar** (selalu terbuka di *Keluar*): ketik angka (76 = Rp 76.000) → tulis catatan → pilih kategori → **Simpan**.
+Bayar pakai QRIS? ketuk **Bayar QRIS**. Untuk keperluan pribadi? ketuk **Pribadi**.
+
+**Uang masuk / penjualan:** ketuk **Masuk** → ketik angka (1500 = Rp 1.500.000) → pilih **Tunai / QRIS / GoFood** →
+**Simpan penjualan**. Boleh sekali sehari (total malam hari) atau beberapa kali (siang, malam, uang GoFood).
+
+Atau kirim pesan WhatsApp ke diri sendiri, lalu tempel malam hari (**Hari ini → Tempel dari WhatsApp**):
 
 | Ketik | Artinya |
 |---|---|
+| `jual 1500` | Uang masuk Rp 1.500.000 |
 | `76 ayam` | Keluar Rp 76.000 tunai untuk ayam |
 | `50p` | Rp 50.000 untuk **pribadi**, bukan warung |
 | `120q gas` | Bayar Rp 120.000 pakai **QRIS / transfer** |
@@ -37,25 +44,13 @@ Lupa yang kecil-kecil? **Tidak apa-apa.**
 
 ---
 
-## 3. Malam hari: ketuk **Hari ini** (atau tanggal di kalender)
+## 3. Lihat hasil hari itu
 
-1. *(Kalau pakai WhatsApp)* **Tempel dari WhatsApp** — salin pesan hari ini, tempel, klik **Baca & simpan**.
-2. **Catat penjualan**, pilih salah satu:
-   - **Sudah tahu totalnya?** Isi **Total penjualan** (1500 = Rp 1.500.000) → **Simpan**. Selesai.
-   - **Belum tahu?** Pakai **Hitung uang** di bawahnya, aplikasi yang menghitung penjualan.
+Ketuk **Hari ini** (atau tanggal di kalender): ada **Laba hari ini**, daftar **Uang masuk** dan **Uang keluar**.
+Salah catat? Ketuk tempat sampah (bisa dibatalkan).
 
-   Kalau Total penjualan diisi, angka itu yang dipakai untuk hari itu. Kosongkan untuk kembali ke hitung uang.
-3. **Hitung uang** — hitung semua uang tunai warung, lalu isi:
-   - Uang tunai (semuanya), boleh ditulis ribuan: 1300 = Rp 1.300.000
-   - QRIS / transfer masuk (lihat aplikasi bank)
-   - GoFood (jumlah yang **diterima**, lihat GoBiz)
-
-   Klik **Simpan**. Penjualan hari ini dihitung otomatis.
-4. *(Opsional)* **Yang terjual** — isi jumlah tiap menu dari catatan pesanan.
-
-> Hitungan uang yang **pertama** hanya menjadi titik awal. Penjualan tunai mulai dihitung dari hitungan berikutnya.
-> Tidak sempat setiap malam? Hitung **seminggu sekali** — hasilnya tetap benar.
-> Catat semua uang keluar hari itu **sebelum** menghitung kas. Belanja setelah hitung kas, catat untuk besok.
+> **Hitung uang (opsional):** hanya kalau tidak mencatat penjualan. Isi uang tunai di laci, QRIS, GoFood, dan aplikasi
+> menghitung penjualannya dari selisih uang. Kalau penjualan dicatat, hitung uang tidak dipakai untuk hari itu.
 
 ---
 

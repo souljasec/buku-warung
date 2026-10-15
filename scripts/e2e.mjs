@@ -23,7 +23,7 @@ const today = (d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '
 const seed = { v: 1, categories: [{ id: 'c1', name_id: 'Belanja pasar', name_en: 'Market', keywords: 'ayam', active: true },
   { id: 'c2', name_id: 'Gas', name_en: 'Gas', keywords: 'gas', active: true }],
   moves: [{ id: 'm1', day: today, amount: 50000, kind: 'expense', paid: 'cash', cat: 'c1', note: 'seed ayam' }],
-  counts: {}, menu: [], tally: {}, salesTotals: { [today]: 900000 }, settings: { lang: 'id', lastBackup: null } };
+  counts: {}, menu: [], tally: {}, salesTotals: {}, settings: { lang: 'id', lastBackup: null } };
 const before = await api('GET');
 const seeded = await api('PUT', JSON.stringify(seed), before.version);
 check('seed local cloud', seeded.version === before.version + 1, `version ${seeded.version}`);
@@ -92,7 +92,7 @@ try {
   // paste, then the same paste again
   const pasteIt = `const d = document.querySelector('details.block:has(form[data-action=paste])'); d.open = true;
     const f = d.querySelector('form'); f.text.value = '35 gas\\n20 es batu\\nkas 1300'; f.requestSubmit()`;
-  const count = () => A.js(`return document.querySelectorAll('.moves li').length`);
+  const count = () => A.js(`return document.querySelectorAll('.moves.out li').length`);
   const n0 = await count();
   await A.js(pasteIt); await wait(500);
   const n1 = await count();
@@ -107,12 +107,28 @@ try {
   check('cash count 1450 = Rp 1.450.000', await A.js(`return document.querySelector('input[name=cash]').value`) === '1.450.000');
   check('QRIS 120 = Rp 120.000', await A.js(`return document.querySelector('input[name=qris]').value`) === '120.000');
 
-  // typed sales total replaces the count for that day; clearing it returns to the count
+  // sales: + button → Masuk, several entries a day; recorded sales win over the money count
   const salesLine = () => A.js(`return document.querySelector('.day .vsplit').textContent`);
-  await A.js(`const f = document.querySelector('form[data-action=sales]'); f.sales.value = '1500'; f.requestSubmit()`); await wait(500);
-  check('typed sales 1500 = Rp 1.500.000 for the day', (await salesLine()).includes('Rp 1.500.000') && (await salesLine()).includes('diketik'));
-  await A.js(`const f = document.querySelector('form[data-action=sales]'); f.sales.value = ''; f.requestSubmit()`); await wait(500);
-  check('cleared total: day uses the money count again', !(await salesLine()).includes('diketik') && !(await salesLine()).includes('Rp 1.500.000'));
+  const addSale = async (keys, via) => {
+    await A.js(`document.querySelector('#fab').click()`); await wait(300);
+    await A.js(`document.querySelector('[data-action=kp-mode][data-mode=in]').click()`); await wait(200);
+    await A.js(`for (const k of ${JSON.stringify(keys)}) document.querySelector('[data-k="'+k+'"]').click();
+      document.querySelector('[data-action=kp-via][data-via=${via}]').click()`); await wait(200);
+    await A.js(`document.querySelector('.kp').requestSubmit()`); await wait(300);
+    await A.js(`document.querySelector('[data-action=kp-close]').click()`); await wait(400);
+  };
+  await A.js(`document.querySelector('#fab').click()`); await wait(300);
+  await A.js(`document.querySelector('[data-action=kp-mode][data-mode=in]').click()`); await wait(200);
+  check('keypad has a Masuk (money in) mode with Tunai / QRIS / GoFood', await A.js(`return document.querySelectorAll('[data-action=kp-via]').length === 3 && !document.querySelector('[data-action=kp-cat]')`));
+  await A.js(`document.querySelector('[data-action=kp-close]').click()`); await wait(300);
+  await addSale(['1', '5', '0', '0'], 'bank');
+  check('sale 1500 via QRIS = Rp 1.500.000 in money in', (await A.js(text('.moves .amt'))).includes('Rp 1.500.000') && (await A.js(text('.pill.sale'))).includes('QRIS / transfer'));
+  check('recorded sale replaces the money-count sales for the day', (await salesLine()).includes('Rp 1.500.000'));
+  await addSale(['7', '0', '0'], 'cash');
+  check('two sales add up to Rp 2.200.000', (await salesLine()).includes('Rp 2.200.000'));
+  check('sales are not counted as spending', !(await A.js(`return document.querySelector('.day .vsplit').textContent`)).includes('Pengeluaran Rp 2.'));
+  await A.js(`[...document.querySelectorAll('.moves li')].find(li => li.textContent.includes('Rp 700.000')).querySelector('[data-action=move-del]').click()`); await wait(400);
+  check('deleting a sale updates the day', (await salesLine()).includes('Rp 1.500.000'));
 
   // reload keeps everything
   await A.go(BASE + `#/m/${today.slice(0, 7)}/d/${today}`, 2000);
@@ -135,10 +151,10 @@ try {
   await A.js(`document.querySelector('#fab').click()`); await wait(300);
   await A.js(`for (const k of ['4','2']) document.querySelector('[data-k="'+k+'"]').click(); document.querySelector('.kpnote').value = 'offline es'; document.querySelector('.kp').requestSubmit()`); await wait(400);
   await A.js(`document.querySelector('[data-action=kp-close]').click()`); await wait(300);
-  check('offline: expense recorded', (await A.js(text('.moves .mnote'))).includes('offline es'));
+  check('offline: expense recorded as money out (+ opens on Keluar even after a sale)', (await A.js(text('.moves.out .mnote'))).includes('offline es'));
   await A.offline(false);
   await A.js(`window.dispatchEvent(new Event('online'))`); await wait(2000);
-  check('back online: offline expense reaches the cloud', (await api('GET')).book.moves.some(m => m.note === 'offline es'));
+  check('back online: offline expense reaches the cloud', (await api('GET')).book.moves.some(m => m.note === 'offline es' && m.kind === 'expense'));
 
   // wrong code on a third device
   const C = await page();

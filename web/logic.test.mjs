@@ -130,4 +130,29 @@ assert.equal(syncDecision({ cloudVersion: 0, cloudHasBook: false, localVersion: 
   assert.equal(salesByDay(b)['2025-03-02'], 800000, 'clearing the total returns to the count');
 }
 
+// M17: sales recorded as money-in entries (the + button, Masuk), several per day
+{
+  const b = newState();
+  const sale = (id, day, amount, paid = 'cash') => ({ id, day, amount, kind: 'sale', paid, cat: null, note: '' });
+  b.moves.push(sale('s1', '2025-04-01', 700000), sale('s2', '2025-04-01', 550000, 'bank'), sale('s3', '2025-04-01', 95000, 'gofood'));
+  b.moves.push({ id: 'e1', day: '2025-04-01', amount: 227000, kind: 'expense', paid: 'cash', cat: null, note: '' });
+  assert.equal(salesByDay(b)['2025-04-01'], 1345000, 'entries add up');
+  assert.equal(expensesByDay(b)['2025-04-01'], 227000, 'a sale is never an expense');
+  // a money count on a day with recorded sales does not add to them
+  b.counts['2025-03-31'] = { cash: 500000, qris: 0, gofood: 0 };
+  b.counts['2025-04-01'] = { cash: 1700000, qris: 0, gofood: 0 };
+  assert.equal(salesByDay(b)['2025-04-01'], 1345000, 'recorded sales win over the count');
+  // cash sales are inflows: they must not be added back as "cash that went out" in a later count period
+  b.moves.push(sale('s4', '2025-04-02', 300000));
+  b.counts['2025-04-03'] = { cash: 1800000, qris: 0, gofood: 0 };
+  assert.equal(salesByDay(b)['2025-04-03'], 100000, 'Δcash only; the 2 April sale is not counted as spending');
+  // parser and validation
+  const { entries } = parseWA('jual 1500\nmasuk 200q siang\n76 ayam');
+  assert.deepEqual(entries.map(e => [e.kind, e.amount, e.paid]), [['sale', 1500000, 'cash'], ['sale', 200000, 'bank'], ['expense', 76000, 'cash']]);
+  const clean = fromBackup(JSON.stringify(b));
+  assert.equal(clean.moves.filter(m => m.kind === 'sale').length, 4);
+  assert.equal(clean.moves.find(m => m.id === 's3').paid, 'gofood');
+  assert.equal(isDuplicatePaste(parseWA('jual 700').entries, [sale('x', '2025-04-01', 700000)], null), true, 'a repeated sale paste is caught too');
+}
+
 console.log('threat-model cases ok');

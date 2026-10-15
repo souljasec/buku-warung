@@ -246,7 +246,8 @@ function selectedDay(R) {
 
 function renderDay(day) {
   const sales = salesByDay(S)[day] || 0;
-  const moves = S.moves.filter(m => m.day === day);
+  const dayMoves = S.moves.filter(m => m.day === day);
+  const ins = dayMoves.filter(m => m.kind === 'sale'), moves = dayMoves.filter(m => m.kind !== 'sale');
   const exp = moves.filter(m => m.kind === 'expense').reduce((a, m) => a + m.amount, 0);
   const pers = moves.filter(m => m.kind === 'personal').reduce((a, m) => a + m.amount, 0);
   const c = S.counts[day] || {};
@@ -268,14 +269,28 @@ function renderDay(day) {
   </header>
 
   ${verdictHTML(t('profitDay'), sales, exp, {
-    tag: S.salesTotals[day] != null ? ` <span class="pill">${t('typedTag')}</span>` : '',
+    tag: !ins.length && S.counts[day] && S.salesTotals[day] == null ? ` <span class="pill">${t('fromCount')}</span>` : '',
     more: pers ? `<span>${t('personal')} <b>${rp(pers)}</b></span>` : '',
   })}
 
   <section class="block">
+    <div class="bhead"><h3>${t('moneyIn')}</h3>
+      <button type="button" class="btn small" data-action="keypad" data-mode="in" data-day="${day}">${icon('plus')}${t('add')}</button></div>
+    ${ins.length || S.salesTotals[day] != null ? `<ul class="moves in">
+      ${S.salesTotals[day] != null ? `<li><span class="amt">${rp(S.salesTotals[day])}</span><span class="mnote">${t('dailyTotal')}</span>
+        <button type="button" class="iconbtn small" data-action="total-del" data-day="${day}" aria-label="${t('delete')}">${icon('trash')}</button></li>` : ''}
+      ${ins.map(mv => `<li>
+        <span class="amt">${rp(mv.amount)}</span>
+        <span class="mnote">${esc(mv.note)}</span>
+        <span class="pill sale">${t({ cash: 'viaCash', bank: 'viaBank', gofood: 'viaGofood' }[mv.paid])}</span>
+        <button type="button" class="iconbtn small" data-action="move-del" data-id="${mv.id}" aria-label="${t('delete')}">${icon('trash')}</button>
+      </li>`).join('')}</ul>` : `<p class="empty">${t('noSales')}</p>`}
+  </section>
+
+  <section class="block">
     <div class="bhead"><h3>${t('moneyOut')}</h3>
-      <button type="button" class="btn small amber" data-action="keypad" data-day="${day}">${icon('plus')}${t('add')}</button></div>
-    ${moves.length ? `<ul class="moves">${moves.map(mv => `
+      <button type="button" class="btn small amber" data-action="keypad" data-mode="out" data-day="${day}">${icon('plus')}${t('add')}</button></div>
+    ${moves.length ? `<ul class="moves out">${moves.map(mv => `
       <li>
         <span class="amt">${rp(mv.amount)}</span>
         <span class="mnote">${esc(mv.note)}</span>
@@ -287,17 +302,9 @@ function renderDay(day) {
       </li>`).join('')}</ul>` : `<p class="empty">${t('nothing')}</p>`}
   </section>
 
-  <form class="block" data-action="sales" data-day="${day}">
-    <h3>${t('salesTitle')}</h3>
-    <p class="hint">${t('salesHelp')}</p>
-    <div class="row">
-      <input name="sales" data-amount inputmode="numeric" autocomplete="off" placeholder="1.500.000" value="${num(S.salesTotals[day])}" aria-label="${t('salesTitle')}" style="flex:1;min-width:150px">
-      <button class="btn">${t('save')}</button>
-    </div>
-  </form>
-
-  <form class="block" data-action="count" data-day="${day}">
-    <h3>${t('stepCount')}</h3>
+  <details class="block" ${S.counts[day] ? 'open' : ''}>
+    <summary><h3>${t('stepCount')} <small>${t('optional')}</small></h3>${icon('right', 'chev')}</summary>
+    <form data-action="count" data-day="${day}" class="stack">
     <p class="hint">${t('countHelp')}</p>
     ${firstCount ? `<p class="note">${t('firstCount')}</p>` : ''}
     <label>${t('cash')}<input name="cash" data-amount inputmode="numeric" autocomplete="off" placeholder="1.300.000" value="${num(c.cash)}"></label>
@@ -306,9 +313,10 @@ function renderDay(day) {
       <label>${t('gofood')}<input name="gofood" data-amount inputmode="numeric" autocomplete="off" placeholder="0" value="${c.gofood ? num(c.gofood) : ''}"></label>
     </div>
     <button class="btn">${t('save')}</button>
-  </form>
+    </form>
+  </details>
 
-  <details class="block" ${moves.length ? '' : 'open'}>
+  <details class="block">
     <summary><h3>${t('stepPaste')}</h3>${icon('right', 'chev')}</summary>
     <p class="hint">${t('pasteHelp')}</p>
     <ul class="codes">${T().codes.map(([k, v]) => `<li><code>${k}</code> ${v}</li>`).join('')}</ul>
@@ -337,15 +345,16 @@ function renderDay(day) {
 // same rule as WhatsApp notes: under 10.000 means thousands (76 -> Rp 76.000)
 const BIG = 2_000_000;  // amounts this large are usually a typo (5000 meant as Rp 5.000) or rent: show a check
 const padAmount = () => { const v = Number(pad.digits || 0); return v < 10000 ? v * 1000 : v; };
-const pad = { day: null, digits: '', cat: null, catTouched: false, personal: false, qris: false, saved: 0 };
+const pad = { day: null, mode: 'out', via: 'cash', digits: '', cat: null, catTouched: false, personal: false, qris: false, saved: 0 };
 
 function topCategories() {
   const use = {};
   for (const m of S.moves) if (m.cat) use[m.cat] = (use[m.cat] || 0) + 1;
   return S.categories.filter(c => c.active).sort((a, b) => (use[b.id] || 0) - (use[a.id] || 0));
 }
-function openKeypad(day) {
-  Object.assign(pad, { day: day || todayISO(), digits: '', catTouched: false, personal: false, qris: false, saved: 0, cat: topCategories()[0]?.id });
+function openKeypad(day, mode) {
+  // always opens on Keluar (the market moment) unless a money-in button asked for Masuk: never on the last-used mode
+  Object.assign(pad, { day: day || todayISO(), mode: mode === 'in' ? 'in' : 'out', via: 'cash', digits: '', catTouched: false, personal: false, qris: false, saved: 0, cat: topCategories()[0]?.id });
   renderKeypad();
   $('#keypad').showModal();
 }
@@ -353,13 +362,21 @@ function renderKeypad() {
   const cats = topCategories();
   const shown = cats.slice(0, 6);
   if (pad.cat && !shown.some(c => c.id === pad.cat)) shown[5] = catById(pad.cat);
-  const amount = padAmount();
+  const amount = padAmount(), isIn = pad.mode === 'in', big = !isIn && amount >= BIG;
   $('#keypad').innerHTML = `
-  <form method="dialog" class="kp" data-action="kp-save">
-    <header><h2>${t('addSpend')}</h2><span class="hint">${dayTitle(pad.day)}</span>
+  <form method="dialog" class="kp ${isIn ? 'in' : 'out'}" data-action="kp-save">
+    <header><span class="hint">${dayTitle(pad.day)}</span>
       <button type="button" class="iconbtn" data-action="kp-close" aria-label="${t('close')}">${icon('x')}</button></header>
+    <div class="seg kpmode" role="group" aria-label="${t('addSpend')}">
+      <button type="button" data-action="kp-mode" data-mode="out" aria-pressed="${!isIn}">${t('kpOut')}</button>
+      <button type="button" data-action="kp-mode" data-mode="in" aria-pressed="${isIn}">${t('kpIn')}</button>
+    </div>
     <output class="kpamt ${amount ? '' : 'zero'}" aria-live="polite">${rp(amount)}</output>
-    <p class="hint kphint ${amount >= BIG ? 'big' : ''}">${amount >= BIG ? t('bigAmount') : t('kpHint')}</p>
+    <p class="hint kphint ${big ? 'big' : ''}">${big ? t('bigAmount') : t(isIn ? 'kpInHint' : 'kpHint')}</p>
+    ${isIn ? `<div class="chips" role="group" aria-label="${t('moneyIn')}">
+      ${['cash', 'bank', 'gofood'].map(v => `<button type="button" class="chip ${pad.via === v ? 'on' : ''}" data-action="kp-via" data-via="${v}" aria-pressed="${pad.via === v}">${t({ cash: 'viaCash', bank: 'viaBank', gofood: 'viaGofood' }[v])}</button>`).join('')}
+    </div>
+    <input class="kpnote" name="note" placeholder="${t('saleNote')}" autocomplete="off" aria-label="${t('note')}">` : `
     <div class="chips" role="group" aria-label="${t('categories')}">
       ${shown.map(c => `<button type="button" class="chip ${c.id === pad.cat && !pad.personal ? 'on' : ''}" data-action="kp-cat" data-id="${c.id}" ${pad.personal ? 'disabled' : ''}>${esc(catName(c))}</button>`).join('')}
       <select data-action="kp-cat-more" aria-label="${t('categories')}" ${pad.personal ? 'disabled' : ''}>
@@ -370,10 +387,11 @@ function renderKeypad() {
       <button type="button" class="chip ${pad.personal ? 'on' : ''}" data-action="kp-personal" aria-pressed="${pad.personal}">${t('personalToggle')}</button>
       <button type="button" class="chip ${pad.qris ? 'on' : ''}" data-action="kp-qris" aria-pressed="${pad.qris}">${t('qrisToggle')}</button>
       ${pad.saved ? `<span class="hint">${t('saved')}: ${pad.saved}</span>` : ''}
-    </div>
+    </div>`}
+    ${isIn && pad.saved ? `<p class="hint">${t('saved')}: ${pad.saved}</p>` : ''}
     <div class="keys">${['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'del'].map(k =>
       `<button type="button" data-action="kp-key" data-k="${k}" ${k === 'del' ? `aria-label="${t('delete')}"` : ''}>${k === 'del' ? icon('back') : k}</button>`).join('')}</div>
-    <button class="btn amber big" ${amount ? '' : 'disabled'}>${t('save')}</button>
+    <button class="btn ${isIn ? '' : 'amber'} big" ${amount ? '' : 'disabled'}>${t(isIn ? 'saveIn' : 'save')}</button>
   </form>`;
 }
 
@@ -587,7 +605,13 @@ const actions = {
     const R = route();
     if (history.state?.fromMonth) history.back(); else go(`#/m/${R.month}`);
   },
-  keypad(el) { openKeypad(el.dataset.day); },
+  keypad(el) { openKeypad(el.dataset.day, el.dataset.mode); },
+  'total-del'(el) {
+    const day = el.dataset.day, old = S.salesTotals[day];
+    delete S.salesTotals[day];
+    rerender();
+    toast(`${t('delete')}: ${rp(old)}`, () => { S.salesTotals[day] = old; rerender(); });
+  },
   'move-del'(el) {
     const i = S.moves.findIndex(m => m.id === el.dataset.id);
     const [gone] = S.moves.splice(i, 1);
@@ -612,6 +636,8 @@ const actions = {
   },
   'kp-cat'(el) { pad.cat = el.dataset.id; pad.catTouched = true; renderKeypadKeepNote(); },
   'kp-personal'() { pad.personal = !pad.personal; renderKeypadKeepNote(); },
+  'kp-mode'(el) { pad.mode = el.dataset.mode; renderKeypad(); },
+  'kp-via'(el) { pad.via = el.dataset.via; renderKeypadKeepNote(); },
   'kp-qris'() { pad.qris = !pad.qris; renderKeypadKeepNote(); },
 };
 
@@ -622,12 +648,6 @@ function renderKeypadKeepNote() {
 }
 
 const submits = {
-  sales(form) {
-    const day = form.dataset.day, v = amountIn(formData(form).sales);
-    if (v == null) delete S.salesTotals[day]; else S.salesTotals[day] = v;
-    rerender();
-    toast(t('saved'));
-  },
   'sync-on'(form) {
     // a device that already holds data must not be silently replaced by the cloud copy: treat it as changed
     Object.assign(sync, { token: formData(form).token.trim(), version: 0, dirty: S.moves.length > 0 || Object.keys(S.salesTotals).length > 0, last: null });
@@ -694,9 +714,10 @@ const submits = {
     const amount = padAmount();
     if (!amount) return;
     const note = (formData(form).note || '').trim();
-    const kind = pad.personal ? 'personal' : 'expense';
+    const kind = pad.mode === 'in' ? 'sale' : pad.personal ? 'personal' : 'expense';
     const cat = kind === 'expense' ? (pad.catTouched || !note ? pad.cat : guessCategory(note, S.categories)) : null;
-    const mv = { id: uid(), day: pad.day, amount, kind, paid: pad.qris ? 'bank' : 'cash', note, cat };
+    const paid = kind === 'sale' ? pad.via : pad.qris ? 'bank' : 'cash';
+    const mv = { id: uid(), day: pad.day, amount, kind, paid, note, cat };
     S.moves.push(mv);
     save();
     pad.saved += 1;

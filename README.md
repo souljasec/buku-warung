@@ -16,9 +16,9 @@ Pembukuan sederhana untuk warung: **untung atau rugi bulan ini?**
 ### What it does
 - **Month calendar:** the month's profit as one big ▲ profit / ▼ loss; every day stamped with its own result; a 12-month strip.
 - **Money out in seconds:** the orange **+** opens a keypad: `76` = Rp 76.000, pick a category, save. Large amounts are flagged.
-- **Sales, two ways:** type the day's **sales total**, or do the evening **money count** (cash in the drawer + QRIS + GoFood)
-  and the app works the sales out, even on chaotic days. A typed total replaces the count for that day; never both.
-- **Paste from WhatsApp:** message yourself while shopping (`76 ayam`, `50p` personal, `120q` paid by QRIS, `kas 1300`,
+- **Money in, same button:** the **+** keypad has **Out | In**. Record sales as often as you like (one evening total or several
+  entries, cash / QRIS / GoFood). Optional: the evening **money count** works sales out from the drawer instead.
+- **Paste from WhatsApp:** message yourself while shopping (`jual 1500` money in, `76 ayam`, `50p` personal, `120q` paid by QRIS, `kas 1300`,
   `modal 500`), paste in the evening. Pasting the same messages twice is detected.
 - **Reports:** 12-month trend, spending by category, sales per day, bestsellers (optional item tally).
 - **Same data on every device:** each phone/laptop keeps a working copy; your Cloudflare copy keeps them in sync.
@@ -54,7 +54,7 @@ Open the connect link once on each phone and laptop. That's it.
 ### Using it
 See the short guide **[PANDUAN.md](PANDUAN.md)** (Indonesian). Daily rhythm:
 1. **Paying for something:** orange **+** → amount → category → Save.
-2. **Evening:** tap **Today** → type the **sales total**, or fill the **money count** (cash, QRIS, GoFood).
+2. **Sales:** orange **+** → **In** → amount → cash / QRIS / GoFood → Save (once at night or several times a day).
 3. **Month end:** add rent (yearly rent ÷ 12), electricity, trash, ceremonies; read the month's profit.
 
 Installing to the home screen is optional (Android: *Install*; iPhone: Share → *Add to Home Screen*, then paste the code
@@ -100,9 +100,9 @@ License: [MIT](LICENSE).
 - **Kalender bulanan:** laba bulan ini dalam satu angka besar, ▲ untung / ▼ rugi; setiap hari punya tanda sendiri.
 - **Catat uang keluar dalam hitungan detik:** tombol oranye **+** → ketik angka (`76` = Rp 76.000) → pilih kategori → Simpan.
   Jumlah yang sangat besar diberi tanda supaya dicek.
-- **Penjualan, dua cara:** ketik **total penjualan** hari itu, atau isi **hitung uang** malam hari (uang tunai di laci + QRIS +
-  GoFood) dan aplikasi yang menghitung. Kalau total diketik, angka itu yang dipakai, tidak dijumlahkan dua kali.
-- **Tempel dari WhatsApp:** kirim pesan ke diri sendiri saat belanja (`76 ayam`, `50p` pribadi, `120q` bayar QRIS,
+- **Uang masuk, tombol yang sama:** tombol **+** punya **Keluar | Masuk**. Catat penjualan sekali (total malam) atau beberapa
+  kali (tunai / QRIS / GoFood). Opsional: **hitung uang** malam hari, aplikasi menghitung penjualan dari laci.
+- **Tempel dari WhatsApp:** kirim pesan ke diri sendiri saat belanja (`jual 1500` uang masuk, `76 ayam`, `50p` pribadi, `120q` bayar QRIS,
   `kas 1300`, `modal 500`), tempel malam hari. Kalau tertempel dua kali, aplikasi mengenalinya.
 - **Laporan:** 12 bulan terakhir, pengeluaran per kategori, penjualan per hari, menu terlaris.
 - **Data sama di semua HP dan laptop**, Bahasa Indonesia / English, bisa dipakai tanpa internet.
@@ -136,7 +136,7 @@ Buka link itu sekali di setiap HP dan laptop. Selesai.
 ### Cara pakai
 Baca panduan singkat **[PANDUAN.md](PANDUAN.md)**. Setiap hari:
 1. **Bayar sesuatu:** tombol oranye **+** → angka → kategori → Simpan.
-2. **Malam hari:** ketuk **Hari ini** → isi **Total penjualan**, atau isi **Hitung uang** (tunai, QRIS, GoFood).
+2. **Penjualan:** tombol oranye **+** → **Masuk** → angka → tunai / QRIS / GoFood → Simpan (sekali malam hari atau beberapa kali).
 3. **Akhir bulan:** catat sewa (sewa setahun ÷ 12), listrik, sampah, upacara; lihat laba bulan ini.
 
 Pasang ke layar utama itu opsional (Android: *Pasang*; iPhone: Bagikan → *Tambah ke Layar Utama*, lalu tempel kode sekali di

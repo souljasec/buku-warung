@@ -22,7 +22,7 @@ export function newState() {
   return {
     v: 1,
     categories: DEFAULT_CATEGORIES.map(([id_, en, kw]) => ({ id: uid(), name_id: id_, name_en: en, keywords: kw, active: true })),
-    moves: [],          // {id, day, amount, kind: expense|personal|capital, paid: cash|bank, cat, note}
+    moves: [],          // {id, day, amount, kind: expense|personal|capital|sale, paid: cash|bank|gofood, cat, note}
     counts: {},         // day -> {cash: number|null, qris, gofood}
     menu: [],           // {id, name, price, group, active}
     tally: {},          // day -> {itemId: {qty, price}}
@@ -38,7 +38,7 @@ export function parseAmount(s) {
 }
 
 const WA_PREFIX = /^\s*(\[[^\]]*\]\s*[^:]{1,40}:|\d{1,4}[/.-]\d{1,2}[/.-]\d{1,4},?\s+\d{1,2}[.:]\d{2}[^-]*-\s*[^:]{1,40}:)\s*/;
-const LINE = /^(kas|modal)?\s*(\d[\d.,]*)\s*([pq]{0,2})(?=\s|$)\s*(.*)$/i;
+const LINE = /^(kas|modal|jual|masuk)?\s*(\d[\d.,]*)\s*([pq]{0,2})(?=\s|$)\s*(.*)$/i;
 
 /** -> {entries, skipped}. entry: {type:'kas', amount} | {type:'move', amount, kind, paid, note} */
 export function parseWA(text) {
@@ -52,6 +52,7 @@ export function parseWA(text) {
     const amount = parseAmount(m[2]);
     if (word === 'kas') entries.push({ type: 'kas', amount });
     else if (word === 'modal') entries.push({ type: 'move', amount, kind: 'capital', paid: 'cash', note });
+    else if (word === 'jual' || word === 'masuk') entries.push({ type: 'move', amount, kind: 'sale', paid: flags.includes('q') ? 'bank' : 'cash', note });
     else entries.push({ type: 'move', amount, note, kind: flags.includes('p') ? 'personal' : 'expense', paid: flags.includes('q') ? 'bank' : 'cash' });
   }
   return { entries, skipped };
@@ -70,9 +71,10 @@ export function guessCategory(note, cats) {
   return (hit || active[0] || {}).id ?? null;
 }
 
-/** Sales per day. A typed (or imported) sales total for a day is used as is. Otherwise: QRIS + GoFood that day,
- *  plus for each cash count: cash now − cash at previous count + cash that went out in between − own money put in.
- *  The very first cash count is only the starting point. A typed total never adds to a count: one or the other. */
+/** Sales per day. Recorded sales (money-in entries) plus any imported daily total are used as is.
+ *  Days without them fall back to the optional money count: QRIS + GoFood that day, plus for each cash count
+ *  cash now − cash at previous count + cash that went out in between − own money put in (first count = starting point).
+ *  Recorded sales and the count never add up for the same day: recorded sales win. */
 export function salesByDay(state) {
   const out = {};
   const add = (d, v) => { out[d] = (out[d] || 0) + v; };
@@ -82,11 +84,13 @@ export function salesByDay(state) {
   for (let i = 1; i < cashDays.length; i++) {
     const prev = cashDays[i - 1], cur = cashDays[i];
     let moved = 0;
-    for (const m of cashMoves) if (m.day > prev && m.day <= cur) moved += m.kind === 'capital' ? -m.amount : m.amount;
+    for (const m of cashMoves) if (m.kind !== 'sale' && m.day > prev && m.day <= cur) moved += m.kind === 'capital' ? -m.amount : m.amount;
     add(cur, state.counts[cur].cash - state.counts[prev].cash + moved);
   }
-  for (const [d, v] of Object.entries(state.salesTotals)) out[d] = v;
-  return out;
+  const direct = {};
+  for (const [d, v] of Object.entries(state.salesTotals)) direct[d] = (direct[d] || 0) + v;
+  for (const m of state.moves) if (m.kind === 'sale') direct[m.day] = (direct[m.day] || 0) + m.amount;
+  return { ...out, ...direct };
 }
 
 export function expensesByDay(state) {
@@ -138,8 +142,8 @@ export function fromBackup(json) {
   }));
   const catIds = new Set(categories.map(c => c.id));
   const moves = s.moves.filter(m => m && ID.test(m.id) && DAY.test(m.day) && nonNeg(m.amount) > 0).map(m => ({
-    id: m.id, day: m.day, amount: nonNeg(m.amount), kind: oneOf(m.kind, ['expense', 'personal', 'capital'], 'expense'),
-    paid: oneOf(m.paid, ['cash', 'bank'], 'cash'), cat: catIds.has(m.cat) ? m.cat : null, note: str(m.note, 200),
+    id: m.id, day: m.day, amount: nonNeg(m.amount), kind: oneOf(m.kind, ['expense', 'personal', 'capital', 'sale'], 'expense'),
+    paid: oneOf(m.paid, ['cash', 'bank', 'gofood'], 'cash'), cat: catIds.has(m.cat) ? m.cat : null, note: str(m.note, 200),
   }));
   const counts = Object.fromEntries(dayEntries(s.counts).filter(([, c]) => c && typeof c === 'object')
     .map(([d, c]) => [d, { cash: nonNeg(c.cash), qris: nonNeg(c.qris) || 0, gofood: nonNeg(c.gofood) || 0 }]));
