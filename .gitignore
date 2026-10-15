@@ -1,0 +1,13 @@
+# your data and secrets stay local
+
+.dev.vars
+*.db
+*.json.bak
+backups/
+dist/
+.wrangler/
+node_modules/
+.impeccable/
+.DS_Store
+web/_seed*
+.sync-code

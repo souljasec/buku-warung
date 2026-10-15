@@ -1,0 +1,17 @@
+{
+  "name": "buku-warung",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline bookkeeping for street warungs: is my warung making money? Installable web app + Cloudflare Workers sync.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "deploy": "npx --yes wrangler@4.151.0 deploy",
+    "dev": "npx --yes wrangler@4.151.0 dev --local --port 8787",
+    "test": "node web/logic.test.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "e2e": "node scripts/e2e.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
