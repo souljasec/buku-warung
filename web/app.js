@@ -500,6 +500,11 @@ function renderMenu() {
 let installEvent = null;
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+// iPhone home-screen apps have their own storage, so a connect link opened in the browser (Safari or Chrome, both WebKit)
+// must stay in the address bar for "Add to Home Screen". The manifest is added here, not in index.html, because iOS reads
+// it on page load and its start_url ("./") would replace the link.
+const keepSyncLink = isIOS && !standalone() && location.hash.startsWith('#sync=');
+if (!keepSyncLink) document.head.append(Object.assign(document.createElement('link'), { rel: 'manifest', href: 'manifest.webmanifest' }));
 let persisted = null;
 
 function renderMore() {
@@ -817,10 +822,7 @@ function takeSyncLink() {
     Object.assign(sync, { token: m[1], version: 0, dirty: S.moves.length > 0 || Object.keys(S.salesTotals).length > 0, last: null });
     saveSync();
   }
-  // iPhone home-screen apps have their own storage, so in the browser (Safari or Chrome, both WebKit) keep the link in the address bar for "Add to Home Screen",
-  // and drop the manifest, whose start_url ("./") would otherwise replace it
-  if (isIOS && !standalone()) $('link[rel=manifest]')?.remove();
-  else history.replaceState(null, '', location.pathname);
+  if (!keepSyncLink) history.replaceState(null, '', location.pathname);
   return fresh;
 }
 

@@ -67,7 +67,8 @@ Installing to the home screen is optional, but then it opens full screen like a 
 
 Home-screen apps on iPhone have their own storage, so the app keeps the connect link in the address bar and the icon
 saves it: the installed app connects to the cloud copy by itself on first launch. Add the icon before tapping around
-(moving between pages replaces the link). Icon already added without the link? Delete it and redo the steps above, or
+(moving between pages replaces the link). Link gone from the address bar
+anyway? The app was updating itself: open the link once more, then add the icon. Icon already added without the link? Delete it and redo the steps above, or
 paste the code once in **More → Cloud sync**. Changed the code? Delete the icon and add it again from the new link.
 
 ### Where your data lives
@@ -159,7 +160,8 @@ Pasang ke layar utama itu opsional, tapi setelah itu terbuka layar penuh seperti
 
 Aplikasi di layar utama iPhone punya penyimpanan sendiri, jadi aplikasi membiarkan link sinkron di kolom alamat dan ikonnya
 ikut menyimpan link itu: saat pertama dibuka, aplikasi langsung tersambung ke cloud. Tambahkan ikon sebelum pindah-pindah
-halaman (pindah halaman mengganti link). Ikon sudah terlanjur dibuat tanpa link? Hapus lalu ulangi langkah di atas, atau
+halaman (pindah halaman mengganti link). Link tetap hilang dari kolom alamat?
+Aplikasi sedang memperbarui diri: buka link itu sekali lagi, lalu tambahkan ikon. Ikon sudah terlanjur dibuat tanpa link? Hapus lalu ulangi langkah di atas, atau
 tempel kodenya sekali di **Lainnya → Sinkron ke cloud**. Kode diganti? Hapus ikon lalu tambahkan lagi dari link baru.
 
 ### Data disimpan di mana
