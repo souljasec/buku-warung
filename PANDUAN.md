@@ -10,7 +10,8 @@ Cukup **±2 menit setiap malam**.
 
 1. Buka alamat aplikasi warung Anda di HP:
    - **Android (Chrome):** ketuk **Pasang** / *Install*.
-   - **iPhone (Safari):** ketuk **Bagikan**, lalu **Tambah ke Layar Utama**. Selalu buka dari ikon itu.
+   - **iPhone (Safari atau Chrome):** buka link sinkron, lalu langsung ketuk **Bagikan** (□↑), **Tambah ke Layar Utama**,
+     **Tambah**. Selalu buka dari ikon itu.
    - **Laptop (Chrome/Edge):** klik ikon pasang di kolom alamat.
 2. Pilih bahasa di **Lainnya**: Bahasa Indonesia atau English.
 3. *(Opsional)* **Lainnya → Sinkron ke cloud:** masukkan kode sinkron warung Anda di setiap HP/laptop,

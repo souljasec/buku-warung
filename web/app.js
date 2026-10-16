@@ -812,10 +812,16 @@ addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvent 
 function takeSyncLink() {
   const m = location.hash.match(/^#sync=([\w-]{20,})$/);
   if (!m) return false;
-  Object.assign(sync, { token: m[1], version: 0, dirty: S.moves.length > 0 || Object.keys(S.salesTotals).length > 0, last: null });
-  saveSync();
-  history.replaceState(null, '', location.pathname);
-  return true;
+  const fresh = m[1] !== sync.token;  // a home-screen app reopens its saved link every launch: don't reset sync each time
+  if (fresh) {
+    Object.assign(sync, { token: m[1], version: 0, dirty: S.moves.length > 0 || Object.keys(S.salesTotals).length > 0, last: null });
+    saveSync();
+  }
+  // iPhone home-screen apps have their own storage, so in the browser (Safari or Chrome, both WebKit) keep the link in the address bar for "Add to Home Screen",
+  // and drop the manifest, whose start_url ("./") would otherwise replace it
+  if (isIOS && !standalone()) $('link[rel=manifest]')?.remove();
+  else history.replaceState(null, '', location.pathname);
+  return fresh;
 }
 
 (async () => {

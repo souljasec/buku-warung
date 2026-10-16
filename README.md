@@ -57,8 +57,18 @@ See the short guide **[PANDUAN.md](PANDUAN.md)** (Indonesian). Daily rhythm:
 2. **Sales:** orange **+** → **In** → amount → cash / QRIS / GoFood → Save (once at night or several times a day).
 3. **Month end:** add rent (yearly rent ÷ 12), electricity, trash, ceremonies; read the month's profit.
 
-Installing to the home screen is optional (Android: *Install*; iPhone: Share → *Add to Home Screen*, then paste the code
-once in **More → Cloud sync**, because home-screen apps on iPhone have their own storage).
+Installing to the home screen is optional, but then it opens full screen like a real app:
+
+- **Android (Chrome):** menu ⋮ → *Install app* (or *Add to Home screen*).
+- **iPhone, Safari:** open the connect link, then **right away** tap Share (□↑) → *Add to Home Screen* → *Add*.
+- **iPhone, Chrome** (iOS 16.4+): open the connect link, then **right away** tap Share (□↑, in the address bar) →
+  *Add to Home Screen* → *Add*.
+- If iOS shows an **Open as Web App** switch, leave it on. Always open the app from the new icon.
+
+Home-screen apps on iPhone have their own storage, so the app keeps the connect link in the address bar and the icon
+saves it: the installed app connects to the cloud copy by itself on first launch. Add the icon before tapping around
+(moving between pages replaces the link). Icon already added without the link? Delete it and redo the steps above, or
+paste the code once in **More → Cloud sync**. Changed the code? Delete the icon and add it again from the new link.
 
 ### Where your data lives
 - On each device (IndexedDB), as one JSON book, so the app works offline.
@@ -139,8 +149,18 @@ Baca panduan singkat **[PANDUAN.md](PANDUAN.md)**. Setiap hari:
 2. **Penjualan:** tombol oranye **+** → **Masuk** → angka → tunai / QRIS / GoFood → Simpan (sekali malam hari atau beberapa kali).
 3. **Akhir bulan:** catat sewa (sewa setahun ÷ 12), listrik, sampah, upacara; lihat laba bulan ini.
 
-Pasang ke layar utama itu opsional (Android: *Pasang*; iPhone: Bagikan → *Tambah ke Layar Utama*, lalu tempel kode sekali di
-**Lainnya → Sinkron ke cloud**, karena aplikasi di layar utama iPhone punya penyimpanan sendiri).
+Pasang ke layar utama itu opsional, tapi setelah itu terbuka layar penuh seperti aplikasi biasa:
+
+- **Android (Chrome):** menu ⋮ → *Instal aplikasi* (atau *Tambahkan ke Layar utama*).
+- **iPhone, Safari:** buka link sinkron, lalu **langsung** ketuk Bagikan (□↑) → *Tambah ke Layar Utama* → *Tambah*.
+- **iPhone, Chrome** (iOS 16.4+): buka link sinkron, lalu **langsung** ketuk Bagikan (□↑, di kolom alamat) →
+  *Tambah ke Layar Utama* → *Tambah*.
+- Kalau iOS menampilkan tombol **Buka sebagai Aplikasi Web**, biarkan menyala. Selalu buka aplikasi dari ikon baru itu.
+
+Aplikasi di layar utama iPhone punya penyimpanan sendiri, jadi aplikasi membiarkan link sinkron di kolom alamat dan ikonnya
+ikut menyimpan link itu: saat pertama dibuka, aplikasi langsung tersambung ke cloud. Tambahkan ikon sebelum pindah-pindah
+halaman (pindah halaman mengganti link). Ikon sudah terlanjur dibuat tanpa link? Hapus lalu ulangi langkah di atas, atau
+tempel kodenya sekali di **Lainnya → Sinkron ke cloud**. Kode diganti? Hapus ikon lalu tambahkan lagi dari link baru.
 
 ### Data disimpan di mana
 - Di setiap HP/laptop, supaya bisa dipakai tanpa internet.
