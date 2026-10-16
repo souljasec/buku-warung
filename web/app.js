@@ -500,11 +500,6 @@ function renderMenu() {
 let installEvent = null;
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-// iPhone home-screen apps have their own storage, so a connect link opened in the browser (Safari or Chrome, both WebKit)
-// must stay in the address bar for "Add to Home Screen". The manifest is added here, not in index.html, because iOS reads
-// it on page load and its start_url ("./") would replace the link.
-const keepSyncLink = isIOS && !standalone() && location.hash.startsWith('#sync=');
-if (!keepSyncLink) document.head.append(Object.assign(document.createElement('link'), { rel: 'manifest', href: 'manifest.webmanifest' }));
 let persisted = null;
 
 function renderMore() {
@@ -814,16 +809,22 @@ wide.addEventListener('change', render);
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvent = e; if (route().view === 'more') render(); });
 
 // connect link: https://…/#sync=<code> connects this device once; the code never leaves the device (fragment)
+// iPhone home-screen apps get their own empty storage; "Add to Home Screen" copies only cookies into them (iOS 17.2+,
+// Safari or Chrome: webkit.org/blog/14787). So on iPhone the link also leaves the code in a short-lived cookie, which a
+// new home-screen app takes once and deletes. The worker never reads cookies (auth is the bearer header only).
+const SYNC_COOKIE = 'pw-sync';
 function takeSyncLink() {
   const m = location.hash.match(/^#sync=([\w-]{20,})$/);
-  if (!m) return false;
-  const fresh = m[1] !== sync.token;  // a home-screen app reopens its saved link every launch: don't reset sync each time
-  if (fresh) {
-    Object.assign(sync, { token: m[1], version: 0, dirty: S.moves.length > 0 || Object.keys(S.salesTotals).length > 0, last: null });
-    saveSync();
-  }
-  if (!keepSyncLink) history.replaceState(null, '', location.pathname);
-  return fresh;
+  const c = document.cookie.match(new RegExp(`(?:^|; )${SYNC_COOKIE}=([\\w-]{20,})`));
+  if (m) {
+    history.replaceState(null, '', location.pathname);
+    if (isIOS && !standalone()) document.cookie = `${SYNC_COOKIE}=${m[1]}; Max-Age=604800; Path=/; Secure; SameSite=Strict`;
+  } else if (c && standalone()) document.cookie = `${SYNC_COOKIE}=; Max-Age=0; Path=/; Secure; SameSite=Strict`;
+  const token = m ? m[1] : standalone() && c ? c[1] : null;
+  if (!token || token === sync.token) return false;
+  Object.assign(sync, { token, version: 0, dirty: S.moves.length > 0 || Object.keys(S.salesTotals).length > 0, last: null });
+  saveSync();
+  return true;
 }
 
 (async () => {

@@ -60,16 +60,15 @@ See the short guide **[PANDUAN.md](PANDUAN.md)** (Indonesian). Daily rhythm:
 Installing to the home screen is optional, but then it opens full screen like a real app:
 
 - **Android (Chrome):** menu ⋮ → *Install app* (or *Add to Home screen*).
-- **iPhone, Safari:** open the connect link, then **right away** tap Share (□↑) → *Add to Home Screen* → *Add*.
-- **iPhone, Chrome** (iOS 16.4+): open the connect link, then **right away** tap Share (□↑, in the address bar) →
-  *Add to Home Screen* → *Add*.
+- **iPhone, Safari:** open the connect link, then tap Share (□↑) → *Add to Home Screen* → *Add*.
+- **iPhone, Chrome:** open the connect link, then tap Share (□↑, in the address bar) → *Add to Home Screen* → *Add*.
 - If iOS shows an **Open as Web App** switch, leave it on. Always open the app from the new icon.
 
-Home-screen apps on iPhone have their own storage, so the app keeps the connect link in the address bar and the icon
-saves it: the installed app connects to the cloud copy by itself on first launch. Add the icon before tapping around
-(moving between pages replaces the link). Link gone from the address bar
-anyway? The app was updating itself: open the link once more, then add the icon. Icon already added without the link? Delete it and redo the steps above, or
-paste the code once in **More → Cloud sync**. Changed the code? Delete the icon and add it again from the new link.
+Home-screen apps on iPhone get their own empty storage. The only thing iOS (17.2 or newer) copies into a new home-screen
+app is the site's cookies, so on iPhone the connect link also leaves the code in a cookie for 7 days: add the icon within
+that week and the app connects to the cloud copy by itself on first launch (it then deletes its copy of the cookie).
+Older iOS, or the icon was added before opening the link? Paste the code once in **More → Cloud sync**, or delete the
+icon and redo the steps above. Changed the code? Open the new link, then delete the icon and add it again.
 
 ### Where your data lives
 - On each device (IndexedDB), as one JSON book, so the app works offline.
@@ -153,16 +152,15 @@ Baca panduan singkat **[PANDUAN.md](PANDUAN.md)**. Setiap hari:
 Pasang ke layar utama itu opsional, tapi setelah itu terbuka layar penuh seperti aplikasi biasa:
 
 - **Android (Chrome):** menu ⋮ → *Instal aplikasi* (atau *Tambahkan ke Layar utama*).
-- **iPhone, Safari:** buka link sinkron, lalu **langsung** ketuk Bagikan (□↑) → *Tambah ke Layar Utama* → *Tambah*.
-- **iPhone, Chrome** (iOS 16.4+): buka link sinkron, lalu **langsung** ketuk Bagikan (□↑, di kolom alamat) →
-  *Tambah ke Layar Utama* → *Tambah*.
+- **iPhone, Safari:** buka link sinkron, lalu ketuk Bagikan (□↑) → *Tambah ke Layar Utama* → *Tambah*.
+- **iPhone, Chrome:** buka link sinkron, lalu ketuk Bagikan (□↑, di kolom alamat) → *Tambah ke Layar Utama* → *Tambah*.
 - Kalau iOS menampilkan tombol **Buka sebagai Aplikasi Web**, biarkan menyala. Selalu buka aplikasi dari ikon baru itu.
 
-Aplikasi di layar utama iPhone punya penyimpanan sendiri, jadi aplikasi membiarkan link sinkron di kolom alamat dan ikonnya
-ikut menyimpan link itu: saat pertama dibuka, aplikasi langsung tersambung ke cloud. Tambahkan ikon sebelum pindah-pindah
-halaman (pindah halaman mengganti link). Link tetap hilang dari kolom alamat?
-Aplikasi sedang memperbarui diri: buka link itu sekali lagi, lalu tambahkan ikon. Ikon sudah terlanjur dibuat tanpa link? Hapus lalu ulangi langkah di atas, atau
-tempel kodenya sekali di **Lainnya → Sinkron ke cloud**. Kode diganti? Hapus ikon lalu tambahkan lagi dari link baru.
+Aplikasi di layar utama iPhone punya penyimpanan sendiri yang masih kosong. Satu-satunya yang disalin iOS (17.2 ke atas) ke
+aplikasi baru di layar utama adalah cookie situs, jadi di iPhone link sinkron juga menyimpan kodenya di cookie selama 7 hari:
+tambahkan ikon dalam minggu itu dan saat pertama dibuka aplikasi langsung tersambung ke cloud (lalu menghapus salinan
+cookie-nya). iOS lebih lama, atau ikon dibuat sebelum membuka link? Tempel kodenya sekali di **Lainnya → Sinkron ke cloud**,
+atau hapus ikon lalu ulangi langkah di atas. Kode diganti? Buka link baru, lalu hapus ikon dan tambahkan lagi.
 
 ### Data disimpan di mana
 - Di setiap HP/laptop, supaya bisa dipakai tanpa internet.
