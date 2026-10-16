@@ -60,15 +60,21 @@ See the short guide **[PANDUAN.md](PANDUAN.md)** (Indonesian). Daily rhythm:
 Installing to the home screen is optional, but then it opens full screen like a real app:
 
 - **Android (Chrome):** menu ⋮ → *Install app* (or *Add to Home screen*).
-- **iPhone, Safari:** open the connect link, then tap Share (□↑) → *Add to Home Screen* → *Add*.
-- **iPhone, Chrome:** open the connect link, then tap Share (□↑, in the address bar) → *Add to Home Screen* → *Add*.
-- If iOS shows an **Open as Web App** switch, leave it on. Always open the app from the new icon.
+- **iPhone** (iOS 17.2 or newer). This is the way that works:
+  1. Copy the connect link (for example from WhatsApp).
+  2. Open **Google Chrome** and open a new **Incognito tab** (it always loads the newest version of the app).
+  3. Paste the link and open it.
+  4. Tap the **Share** button at the top right (□↑, in the address bar).
+  5. Tap **Add to Home Screen**.
+  6. Give it a name if you like (for example *Warung*), then tap **Add**.
+  7. Now there is an icon of the app on your iPhone. Open it and check that your numbers are there.
 
-Home-screen apps on iPhone get their own empty storage. The only thing iOS (17.2 or newer) copies into a new home-screen
-app is the site's cookies, so on iPhone the connect link also leaves the code in a cookie for 7 days: add the icon within
-that week and the app connects to the cloud copy by itself on first launch (it then deletes its copy of the cookie).
-Older iOS, or the icon was added before opening the link? Paste the code once in **More → Cloud sync**, or delete the
-icon and redo the steps above. Changed the code? Open the new link, then delete the icon and add it again.
+  Shows nothing (0)? Open **More → Cloud sync** in the app and paste the code once. Safari works too (Share → *Add to
+  Home Screen*); if iOS shows an **Open as Web App** switch, leave it on. Always open the app from the icon.
+
+Why the steps matter: home-screen apps on iPhone get their own empty storage, and the only thing iOS copies into a new one
+is the site's cookies. So on iPhone the connect link also leaves the code in a cookie for 7 days, and the new icon picks it
+up on first launch. Changed the code? Open the new link the same way, then delete the old icon and add it again.
 
 ### Where your data lives
 - On each device (IndexedDB), as one JSON book, so the app works offline.
@@ -152,15 +158,23 @@ Baca panduan singkat **[PANDUAN.md](PANDUAN.md)**. Setiap hari:
 Pasang ke layar utama itu opsional, tapi setelah itu terbuka layar penuh seperti aplikasi biasa:
 
 - **Android (Chrome):** menu ⋮ → *Instal aplikasi* (atau *Tambahkan ke Layar utama*).
-- **iPhone, Safari:** buka link sinkron, lalu ketuk Bagikan (□↑) → *Tambah ke Layar Utama* → *Tambah*.
-- **iPhone, Chrome:** buka link sinkron, lalu ketuk Bagikan (□↑, di kolom alamat) → *Tambah ke Layar Utama* → *Tambah*.
-- Kalau iOS menampilkan tombol **Buka sebagai Aplikasi Web**, biarkan menyala. Selalu buka aplikasi dari ikon baru itu.
+- **iPhone** (iOS 17.2 ke atas). Cara yang sudah terbukti jalan:
+  1. Salin link sinkron (misalnya dari WhatsApp).
+  2. Buka **Google Chrome**, lalu buka **tab Penyamaran** (*Incognito*) baru (selalu memuat versi aplikasi yang terbaru).
+  3. Tempel link-nya lalu buka.
+  4. Ketuk tombol **Bagikan** di pojok kanan atas (□↑, di kolom alamat).
+  5. Ketuk **Tambah ke Layar Utama**.
+  6. Beri nama kalau mau (misalnya *Warung*), lalu ketuk **Tambah**.
+  7. Sekarang ada ikon aplikasi di iPhone Anda. Buka, lalu cek apakah angka-angka Anda masih ada.
 
-Aplikasi di layar utama iPhone punya penyimpanan sendiri yang masih kosong. Satu-satunya yang disalin iOS (17.2 ke atas) ke
-aplikasi baru di layar utama adalah cookie situs, jadi di iPhone link sinkron juga menyimpan kodenya di cookie selama 7 hari:
-tambahkan ikon dalam minggu itu dan saat pertama dibuka aplikasi langsung tersambung ke cloud (lalu menghapus salinan
-cookie-nya). iOS lebih lama, atau ikon dibuat sebelum membuka link? Tempel kodenya sekali di **Lainnya → Sinkron ke cloud**,
-atau hapus ikon lalu ulangi langkah di atas. Kode diganti? Buka link baru, lalu hapus ikon dan tambahkan lagi.
+  Tidak muncul apa-apa (0)? Buka **Lainnya → Sinkron ke cloud** di aplikasi dan tempel kodenya sekali. Safari juga bisa
+  (Bagikan → *Tambah ke Layar Utama*); kalau iOS menampilkan tombol **Buka sebagai Aplikasi Web**, biarkan menyala.
+  Selalu buka aplikasi dari ikon itu.
+
+Kenapa harus begini: aplikasi di layar utama iPhone punya penyimpanan sendiri yang masih kosong, dan satu-satunya yang
+disalin iOS ke sana adalah cookie situs. Jadi di iPhone link sinkron juga menyimpan kodenya di cookie selama 7 hari, dan
+ikon baru mengambilnya saat pertama dibuka. Kode diganti? Buka link baru dengan cara yang sama, lalu hapus ikon lama dan
+tambahkan lagi.
 
 ### Data disimpan di mana
 - Di setiap HP/laptop, supaya bisa dipakai tanpa internet.
